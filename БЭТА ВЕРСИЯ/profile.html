@@ -66,17 +66,13 @@
             </div>
           </div>
 
-          <!-- Стильное модальное окно с загрузкой аватара -->
+          <!-- Модальное окно для загрузки аватара -->
           <div id="avatar-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
             <div class="bg-white p-6 rounded-lg max-w-md w-full shadow-md">
               <h3 class="text-lg font-medium mb-4 text-green-700">Загрузите свой аватар</h3>
-              
-              <!-- Предпросмотр загруженного аватара -->
               <div class="flex justify-center mb-6">
                 <img id="avatar-preview" src="images/avatar1.jpg" class="w-24 h-24 rounded-full border-2 border-green-100 object-cover" alt="Предпросмотр аватара">
               </div>
-
-              <!-- Кастомная кнопка для загрузки -->
               <div class="mb-6">
                 <label for="custom-avatar" class="block w-full text-center py-2 px-4 bg-green-500 text-white rounded-full cursor-pointer hover:bg-green-600 transition-colors flex items-center justify-center">
                   <i class="w-5 h-5 mr-2" data-lucide="upload"></i>
@@ -84,16 +80,12 @@
                 </label>
                 <input type="file" id="custom-avatar" accept="image/*" class="hidden">
               </div>
-
-              <!-- Кнопка сохранения -->
               <button id="save-avatar-btn" class="w-full py-2 rounded-full bg-green-100 hover:bg-green-200 text-green-700 font-medium mb-4 transition-colors">Сохранить</button>
-
-              <!-- Кнопка закрытия -->
               <button id="close-avatar-modal" class="w-full py-2 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium transition-colors">Закрыть</button>
             </div>
           </div>
 
-          <!-- Информация о профиле -->
+          <!-- Обновлённая информация о профиле -->
           <div class="space-y-4 mb-6">
             <div class="flex items-center">
               <i class="w-5 h-5 text-gray-500 mr-2" data-lucide="calendar"></i>
@@ -115,32 +107,13 @@
               <i class="w-5 h-5 text-gray-500 mr-2" data-lucide="map-pin"></i>
               <span class="text-sm">Город: Москва</span>
             </div>
-          </div>
-
-          <!-- Достижения -->
-          <button class="w-full py-2 rounded-lg bg-green-100 hover:bg-green-200 text-green-800 font-medium transition-colors" data-toggle="profile-details">
-            Показать достижения
-          </button>
-          <div class="profile-details hidden mt-4 space-y-3" id="profile-details">
-            <div class="achievement flex items-center">
-              <div class="p-2 rounded-full bg-green-100 mr-3">
-                <i class="h-5 w-5 text-green-600" data-lucide="leaf"></i>
-              </div>
-              <div>
-                <div class="font-medium">Первые шаги</div>
-                <div class="text-xs text-gray-500">Выполнены первые 3 эко-задания</div>
-                <div class="text-xs text-gray-500 mt-1">20 мая 2023</div>
-              </div>
+            <div class="flex items-center">
+              <i class="w-5 h-5 text-gray-500 mr-2" data-lucide="cloud"></i>
+              <span class="text-sm" id="co2-saved">Сэкономлено CO2: 120 кг</span>
             </div>
-            <div class="achievement flex items-center">
-              <div class="p-2 rounded-full bg-green-100 mr-3">
-                <i class="h-5 w-5 text-green-700" data-lucide="leaf"></i>
-              </div>
-              <div>
-                <div class="font-medium">Защитник деревьев</div>
-                <div class="text-xs text-gray-500">Участие в посадке деревьев</div>
-                <div class="text-xs text-gray-500 mt-1">12 мая 2023</div>
-              </div>
+            <div class="flex items-center">
+              <i class="w-5 h-5 text-gray-500 mr-2" data-lucide="trophy"></i>
+              <span class="text-sm" id="leaderboard-position">Позиция в рейтинге: 1 из 42</span>
             </div>
           </div>
         </div>
@@ -169,5 +142,115 @@
   </div>
 
   <script src="script.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Инициализация Lucide иконок
+      lucide.createIcons();
+      setTimeout(() => lucide.createIcons(), 100);
+
+      // Мобильное меню
+      setupMobileMenu();
+
+      // Настройка выбора аватара
+      setupAvatarSelection();
+
+      // Обновление данных профиля
+      updateProfileData();
+    });
+
+    function setupMobileMenu() {
+      const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+      const mobileMenu = document.getElementById('mobile-menu');
+      const closeMobileMenuBtn = document.getElementById('close-mobile-menu');
+
+      if (mobileMenuBtn && mobileMenu && closeMobileMenuBtn) {
+        mobileMenuBtn.addEventListener('click', () => {
+          mobileMenu.classList.remove('-translate-x-full');
+          mobileMenu.classList.add('translate-x-0');
+        });
+
+        closeMobileMenuBtn.addEventListener('click', () => {
+          mobileMenu.classList.remove('translate-x-0');
+          mobileMenu.classList.add('-translate-x-full');
+        });
+
+        const navLinks = mobileMenu.querySelectorAll('.nav-btn-mobile');
+        navLinks.forEach(link => {
+          link.addEventListener('click', () => {
+            mobileMenu.classList.remove('translate-x-0');
+            mobileMenu.classList.add('-translate-x-full');
+          });
+        });
+      }
+    }
+
+    function setupAvatarSelection() {
+      const avatar = document.getElementById('avatar');
+      const avatarModal = document.getElementById('avatar-modal');
+      const closeModalBtn = document.getElementById('close-avatar-modal');
+      const saveAvatarBtn = document.getElementById('save-avatar-btn');
+      const customAvatarInput = document.getElementById('custom-avatar');
+      const avatarPreview = document.getElementById('avatar-preview');
+
+      const savedAvatar = localStorage.getItem('customAvatar');
+      if (savedAvatar) {
+        avatar.src = savedAvatar;
+        avatarPreview.src = savedAvatar;
+      }
+
+      if (avatar) {
+        avatar.addEventListener('click', () => {
+          avatarModal.classList.remove('hidden');
+          avatarPreview.src = avatar.src;
+        });
+      }
+
+      if (closeModalBtn) {
+        closeModalBtn.addEventListener('click', () => {
+          avatarModal.classList.add('hidden');
+        });
+      }
+
+      if (customAvatarInput) {
+        customAvatarInput.addEventListener('change', (e) => {
+          const file = e.target.files[0];
+          if (file) {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+              avatarPreview.src = event.target.result;
+            };
+            reader.readAsDataURL(file);
+          }
+        });
+      }
+
+      if (saveAvatarBtn) {
+        saveAvatarBtn.addEventListener('click', () => {
+          const previewSrc = avatarPreview.src;
+          if (previewSrc && !previewSrc.includes('images/avatar1.jpg')) {
+            avatar.src = previewSrc;
+            localStorage.setItem('customAvatar', previewSrc);
+          }
+          avatarModal.classList.add('hidden');
+        });
+      }
+    }
+
+    function updateProfileData() {
+      // Пример динамического обновления CO2 и позиции в рейтинге
+      const savedXP = parseInt(localStorage.getItem('userXP')) || 450; // Начальное значение из index.html
+      const co2SavedElement = document.getElementById('co2-saved');
+      const leaderboardPositionElement = document.getElementById('leaderboard-position');
+
+      // Простой расчёт CO2 (например, 0.5 кг CO2 за каждые 10 XP)
+      const co2Saved = Math.floor(savedXP * 0.05);
+      co2SavedElement.textContent = `Сэкономлено CO2: ${co2Saved} кг`;
+
+      // Позиция в рейтинге (пример: фиксированная, можно связать с ranks.html)
+      const totalParticipants = 42; // Из таблицы лидеров
+      const position = savedXP >= 7500 ? 1 : Math.floor((7500 - savedXP) / 100) + 1; // Пример расчёта
+      leaderboardPositionElement.textContent = `Позиция в рейтинге: ${position} из ${totalParticipants}`;
+    }
+  </script>
 </body>
 </html>
